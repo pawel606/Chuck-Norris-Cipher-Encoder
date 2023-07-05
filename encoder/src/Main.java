@@ -2,15 +2,10 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Input string:");
-        String word = scanner.nextLine();
-        System.out.println("String to binary: ");
-        System.out.println(stringtoBinary(word));
-        System.out.println("Binary to chuckNorris: ");
-        System.out.println(binarytoChuckNorris(binarytoChuckNorris(stringtoBinary(word))));
-        System.out.println("Chuck Norris to string");
-        System.out.println(binarytoString(chuckNorristoBinary(binarytoChuckNorris(stringtoBinary(word)))));
+        boolean tmp = true;
+        while(tmp) {
+            tmp = menu();
+        }
     }
     public static String stringtoBinary(String word) {
         String binary = "";
@@ -82,7 +77,7 @@ public class Main {
         int [] values = new int[binary.length() / 7];
         String tmp = "";
         for(int j = 0; j < table.length; j++) {
-            int tmpp = j * 7;
+            int tmpp = 1 * j * 7;
             for (int i = 0 ; i < 7; i++) {
                 tmp += binary.charAt(tmpp + i);
             }
@@ -105,5 +100,64 @@ public class Main {
             end += (char)values[i];
         }
         return end;
+    }
+
+    public static boolean menu() {
+        System.out.println("Please input operation (encode/decode/exit)");
+        Scanner sc = new Scanner(System.in);
+        String option = sc.nextLine();
+        switch (option) {
+            case "encode" -> {
+                System.out.println("Input string:");
+                String input = sc.nextLine();
+                System.out.println("Encoded string:");
+                System.out.println(binarytoChuckNorris(stringtoBinary(input)));
+                System.out.println();
+                return true;
+            }
+            case "decode" -> {
+                System.out.println("Input encoded string:");
+                String input = sc.nextLine();
+                String[] inputBlocks = input.split(" ");
+                boolean inputCorrect = true;
+                for (int i = 0; i<input.length(); i++) {                       // The encoded message includes characters other than 0 or spaces;
+                    if(input.charAt(i) != '0' && input.charAt(i) != ' ') {
+                        inputCorrect = false;
+                        break;
+                    }
+                }
+
+                if(!(inputBlocks[0].equals("0") || inputBlocks[0].equals("00"))) {        //The first block of each sequence is not 0 or 00;
+                    inputCorrect = false;
+                }
+
+                if(inputBlocks.length % 2 != 0) {     //The number of blocks is odd;
+                    inputCorrect = false;
+                }
+
+                if(chuckNorristoBinary(input).length() %7 != 0) {
+                    inputCorrect = false;
+                }
+
+                if (inputCorrect) {
+                    System.out.println("Decoded string:");
+                    System.out.println(binarytoString(chuckNorristoBinary(input)));
+                    System.out.println();
+                    return true;
+                }
+                System.out.println("Encoded string is not valid.");
+                System.out.println();
+                return true;
+            }
+            case "exit" -> {
+                System.out.println("Bye!");
+                return false;
+            }
+            default -> {
+                System.out.println("There is no '" + option + "' operation");
+                System.out.println();
+                return true;
+            }
+        }
     }
 }
